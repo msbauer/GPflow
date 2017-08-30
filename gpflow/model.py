@@ -123,7 +123,7 @@ class Model(Parameterized):
         Parameterized.__setstate__(self, d)
         self._needs_recompile = True
 
-    def compile(self, session=None, graph=None, optimizer=None):
+    def compile(self, session=None, graph=None, optimizer=None, **kw):
         """
         Compile the tensorflow function "self._objective".
         The `session` and `graph` parameters are mutually exclusive.
@@ -166,7 +166,7 @@ class Model(Parameterized):
                 opt_step = None
             else:
                 opt_step = optimizer.minimize(
-                    self._minusF, var_list=[self._free_vars])
+                    self._minusF, var_list=[self._free_vars], **kw)
             init = tf.global_variables_initializer()
 
         session.run(init)
@@ -250,11 +250,11 @@ class Model(Parameterized):
             return self._optimize_np(method, tol, callback, maxiter, **kw)
         return self._optimize_tf(method, callback, maxiter, **kw)
 
-    def _optimize_tf(self, method, callback, maxiter):
+    def _optimize_tf(self, method, callback, maxiter, **kw):
         """
         Optimize the model using a tensorflow optimizer. See self.optimize()
         """
-        opt_step = self.compile(optimizer=method)
+        opt_step = self.compile(optimizer=method, **kw)
         feed_dict = {}
 
         try:

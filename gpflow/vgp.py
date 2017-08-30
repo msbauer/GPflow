@@ -63,7 +63,7 @@ class VGP(GPModel):
                                for _ in range(self.num_latent)]).swapaxes(0, 2)
         self.q_sqrt = Param(q_sqrt, transforms.LowerTriangular(self.num_data, self.num_latent))
 
-    def compile(self, session=None, graph=None, optimizer=None):
+    def compile(self, session=None, graph=None, optimizer=None, **kw):
         """
         Before calling the standard compile function, check to see if the size
         of the data has changed and add variational parameters appropriately.
@@ -79,7 +79,7 @@ class VGP(GPModel):
 
         return super(VGP, self).compile(session=session,
                                         graph=graph,
-                                        optimizer=optimizer)
+                                        optimizer=optimizer, **kw)
 
     def build_likelihood(self):
         """
